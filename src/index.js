@@ -28,7 +28,9 @@ async function iniciarBotTelegram() {
     });
 
     try {
-        await client.connect();
+        if (fs.existsSync("session.json")) {
+            await client.connect();
+        }
 
         if (!client.connected) {
             await client.start({
@@ -81,23 +83,42 @@ async function iniciarBotTelegram() {
             }
         }
 
-        client.addEventHandler(async (event) => {
-            const message = event.message.message;
-            const senderId = event.message.senderId?.value;
-            const idGroup = event.message.peerId?.channelId?.value;
+        const mensagensProcessadas = new Set();
 
-            const IDS = ['', '', '', ''];
+        client.addEventHandler(async (event) => {
+            const msg = event.message;
+            const messageText = msg.message;
+            const senderId = msg.senderId?.value;
+            const idGroup = msg.peerId?.channelId?.value;
+
+            //console.log(event.message)
+            //console.log(event.message.message)
+
+            const IDS = ['-1001465877129', '', '', ''];
+
+            const idUnico = `${msg.id}-${idGroup || senderId}`;
+
+            if (mensagensProcessadas.has(idUnico)) {
+                console.log("⚠️ Promoção duplicada ignorada:", idUnico);
+                return;
+            }
+
+            mensagensProcessadas.add(idUnico);
+
+            if (mensagensProcessadas.size > 1000) {
+                mensagensProcessadas.clear();
+            }
 
             for (const id of IDS) {
                 if (id == senderId || id == idGroup) {
-                    if (!message) return;
+                    if (!messageText) return;
 
                     try {
-                        if (event.message.media) {
-                            const buffer = await client.downloadMedia(event.message.media);
-                            await processarPromocao(message, buffer);
+                        if (msg.media) {
+                            const buffer = await client.downloadMedia(msg.media);
+                            await processarPromocao(messageText, buffer);
                         } else {
-                            await processarPromocao(message);
+                            await processarPromocao(messageText);
                         }
                     } catch (err) {
                         console.error('❌ Erro ao processar promoção:', err.message);

@@ -1,0 +1,7 @@
+.env
+node_modules
+session.json
+auth_info_baileys
+groups_jid.json
+sesesion.json
+usuarios.json

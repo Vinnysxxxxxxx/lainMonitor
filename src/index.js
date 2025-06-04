@@ -56,7 +56,7 @@ async function iniciarBotTelegram() {
             }
 
             try {
-                const grupoPadraoJid = '120363402073124964@g.us';
+                const grupoPadraoJid = process.env.GROUP_DEFAULT;
                 await enviarParaWhatsApp(grupoPadraoJid, texto, caminhoImagem);
 
                 const usuarios = getUsuariosInteresse();
@@ -86,7 +86,7 @@ async function iniciarBotTelegram() {
             const senderId = event.message.senderId?.value;
             const idGroup = event.message.peerId?.channelId?.value;
 
-            const IDS = ['-1002292426719', '2478604861', '2149445220', '-1001901497266'];
+            const IDS = ['', '', '', ''];
 
             for (const id of IDS) {
                 if (id == senderId || id == idGroup) {

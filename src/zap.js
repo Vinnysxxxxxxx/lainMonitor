@@ -17,7 +17,7 @@ async function startBot() {
     logger: pino({ level: 'silent' }),
   });
 
-  sock.ev.on('connection.update', (update) => {
+  sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
@@ -32,6 +32,14 @@ async function startBot() {
       if (shouldReconnect) startBot();
     } else if (connection === 'open') {
       console.log('✅ WhatsApp conectado!');
+      const gruposParticipando = await sock.groupFetchAllParticipating();
+      const grupos = Object.values(gruposParticipando);
+
+      for (const grupo of grupos) {
+        const nome = grupo.subject;
+        const jid = grupo.id;
+        console.log(`📛 Nome: ${nome} | 🆔 JID: ${jid}`);
+      }
     }
   });
 

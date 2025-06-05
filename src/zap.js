@@ -2,7 +2,8 @@ const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = requi
 const fs = require('fs');
 const pino = require('pino');
 const saveGroupInfo = require('./utils/salve.group');
-const salvarPalavras = require('./utils/save.text')
+const salvarPalavras = require('./utils/save.text');
+const removerPalavras = require('./utils/remove.txt');
 
 const SESSION_DIR = './auth_info_baileys';
 if (!fs.existsSync(SESSION_DIR)) fs.mkdirSync(SESSION_DIR, { recursive: true });
@@ -70,7 +71,6 @@ async function startBot() {
       if (!text) continue;
 
       const sender = msg.key.remoteJid.replace(/[^0-9]/g, '');
-
       if (text.startsWith('/add')) {
         const palavras = text.replace('/add', '').trim().split(/\s+/);
         if (palavras.length === 0) continue;
@@ -78,6 +78,36 @@ async function startBot() {
         salvarPalavras(sender, palavras);
         await sock.sendMessage(msg.key.remoteJid, {
           text: `✅ Palavras salvas: ${palavras.join(', ')}`
+        });
+        continue;
+      }
+
+      if (text.startsWith('/remove')) {
+        const palavras = text.replace('/remove', '').trim().split(/\s+/);
+        if (palavras.length === 0) {
+          await sock.sendMessage(msg.key.remoteJid, {
+            text: `❌ Nenhuma palavra informada para remover. Use: /remove palavra1 palavra2 ...`
+          });
+          continue;
+        }
+
+        const removidas = removerPalavras(sender, palavras);
+        if (removidas.length > 0) {
+          await sock.sendMessage(msg.key.remoteJid, {
+            text: `🗑️ Palavras removidas: ${removidas.join(', ')}`
+          });
+        } else {
+          await sock.sendMessage(msg.key.remoteJid, {
+            text: `⚠️ Nenhuma das palavras informadas estava cadastrada para este usuário.`
+          });
+        }
+        continue;
+      }
+
+      if (text.startsWith('/reset')) {
+        removerPalavras(sender);
+        await sock.sendMessage(msg.key.remoteJid, {
+          text: `🔄 Todas as palavras deste usuário foram removidas.`
         });
         continue;
       }

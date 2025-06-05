@@ -91,8 +91,6 @@ async function iniciarBotTelegram() {
             const senderId = msg.senderId?.value;
             const idGroup = msg.peerId?.channelId?.value;
 
-            //console.log(event.message)
-            //console.log(event.message.message)
 
             const IDS = ['-1001465877129', '', '', ''];
 

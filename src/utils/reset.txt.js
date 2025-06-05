@@ -1,5 +1,6 @@
 const fs = require("fs");
-
+const path = require('path');
+const usuariosPath = path.join(__dirname, '..', 'usuarios.json');
 function resetarPalavras(numero) {
   let data;
   try {

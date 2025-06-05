@@ -1,5 +1,6 @@
 const fs = require("fs");
-
+const path = require('path');
+const usuariosPath = path.join(__dirname, '..', 'usuarios.json');
 function removerPalavras(numero, palavras) {
   let data;
   try {

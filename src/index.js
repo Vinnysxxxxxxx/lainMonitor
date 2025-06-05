@@ -92,7 +92,7 @@ async function iniciarBotTelegram() {
             const idGroup = msg.peerId?.channelId?.value;
 
 
-            const IDS = ['-1001465877129', '', '', ''];
+            const IDS = ['-1002292426719', '', '', ''];
 
             const idUnico = `${msg.id}-${idGroup || senderId}`;
 

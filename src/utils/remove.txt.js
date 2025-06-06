@@ -1,7 +1,15 @@
 const fs = require("fs");
 const path = require('path');
+
 const usuariosPath = path.join(__dirname, '../..', 'usuarios.json');
+
 function removerPalavras(numero, palavras) {
+  console.log(palavras)
+  if (!Array.isArray(palavras)) {
+    console.error('❌ Argumento inválido: "palavras" não é um array:', palavras);
+    return [];
+  }
+
   let data;
   try {
     data = JSON.parse(fs.readFileSync(usuariosPath, 'utf8'));

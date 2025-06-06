@@ -66,11 +66,16 @@ async function startBot() {
 
   sock.ev.on('messages.upsert', async ({ messages }) => {
 
+     // console.log(messages)
+
     for (const msg of messages) {
+     // console.log(messages, msg)
+
       const text = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
       if (!text) continue;
 
       const sender = msg.key.remoteJid.replace(/[^0-9]/g, '');
+      //console.log(text, sender)
       if (text.startsWith('/add')) {
         const palavras = text.replace('/add', '').trim().split(/\s+/);
         if (palavras.length === 0) continue;
@@ -105,7 +110,7 @@ async function startBot() {
       }
 
       if (text.startsWith('/reset')) {
-        removerPalavras(sender);
+        removerPalavras(text);
         await sock.sendMessage(msg.key.remoteJid, {
           text: `🔄 Todas as palavras deste usuário foram removidas.`
         });
